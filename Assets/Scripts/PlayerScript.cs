@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
 
     public MusicMasterScript master;
     public Camera playerCamera;
+    public AudioSource noteSound;
 
     bool _moving = false;
 
@@ -21,7 +23,8 @@ public class PlayerScript : MonoBehaviour {
 
     void FixedUpdate()
     {
-        transform.Translate(Vector3.right * master.MovementSpeedPerTick);
+        var movementDistance = master.MovementSpeedPerTick;
+        transform.Translate(Vector3.right * movementDistance);
         playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, playerCamera.transform.position.z);
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -48,6 +51,18 @@ public class PlayerScript : MonoBehaviour {
         else
         {
             _moving = false;
+        }
+
+        var notes = FindObjectsOfType<NoteScript>();
+        var currentNote = notes.Where
+        (
+            n => n.transform.position.x >= transform.position.x && n.transform.position.x < transform.position.x + movementDistance && 
+                 n.transform.position.y >= transform.position.y - 0.1f && n.transform.position.y <= transform.position.y + 0.1f
+        ).FirstOrDefault();
+        if (currentNote != null)
+        {
+            noteSound.pitch = 1 + (currentNote.transform.position.y / 12);
+            noteSound.Play();
         }
     }
 }
