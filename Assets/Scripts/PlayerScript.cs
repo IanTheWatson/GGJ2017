@@ -26,43 +26,45 @@ public class PlayerScript : MonoBehaviour {
         var movementDistance = master.MovementSpeedPerTick;
         transform.Translate(Vector3.right * movementDistance);
         playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y, playerCamera.transform.position.z);
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (!_moving)
-            {
-                _moving = true;
-                transform.Translate(Vector3.up * 0.5f);
-            }
-        }
-        else
-        {
-            _moving = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            if (!_moving)
-            {
-                _moving = true;
-                transform.Translate(Vector3.down * 0.5f);
-            }
-        }
-        else
-        {
-            _moving = false;
-        }
+        HandleInputs();
 
         var notes = FindObjectsOfType<NoteScript>();
         var currentNote = notes.Where
         (
-            n => n.transform.position.x >= transform.position.x && n.transform.position.x < transform.position.x + movementDistance && 
+            n => n.transform.position.x >= transform.position.x && n.transform.position.x < transform.position.x + movementDistance &&
                  n.transform.position.y >= transform.position.y - 0.1f && n.transform.position.y <= transform.position.y + 0.1f
         ).FirstOrDefault();
         if (currentNote != null)
         {
             noteSound.pitch = NoteInfo.GetPitchFromPosition((int)(currentNote.transform.position.y * 2), true);
             noteSound.Play();
+        }
+    }
+
+    private void HandleInputs()
+    {
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            if (!_moving)
+            {
+                Debug.Log("Moving set to true");
+                _moving = true;
+                transform.Translate(Vector3.up * 0.5f);
+            }
+        }
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            if (!_moving)
+            {
+                Debug.Log("Moving set to true");
+                _moving = true;
+                transform.Translate(Vector3.down * 0.5f);
+            }
+        }
+        else if (_moving)
+        {
+            Debug.Log("Moving set to false");
+            _moving = false;
         }
     }
 }
