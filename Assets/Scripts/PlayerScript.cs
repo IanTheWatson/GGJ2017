@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour {
     public MusicMasterScript master;
     public Camera playerCamera;
     public AudioSource noteSound;
+    public ParticleSystem playerParticle;
 
     bool _moving = false;
 
@@ -26,6 +27,7 @@ public class PlayerScript : MonoBehaviour {
         var movementDistance = master.MovementSpeedPerTick;
         transform.Translate(Vector3.right * movementDistance);
         playerCamera.transform.position = new Vector3(transform.position.x, playerCamera.transform.position.y, playerCamera.transform.position.z);
+        playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         HandleInputs();
 
         var notes = FindObjectsOfType<NoteScript>();
