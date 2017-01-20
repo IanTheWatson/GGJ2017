@@ -41,8 +41,8 @@ public static class NoteInfo
         int scaleNote = normalisedPosition % 7;
 
         int offset = CScale[scaleNote < 0 ? CScale.Length - (scaleNote + 1) : scaleNote] + (octave * 12) + mod;
-        Debug.Log("Offset:" + offset);
-        Debug.Log("Math:" + Mathf.Pow(scale, offset));
+        //Debug.Log("Offset:" + offset);
+        //Debug.Log("Math:" + Mathf.Pow(scale, offset));
         return (Mathf.Pow(scale, offset));
     }
 }

@@ -47,7 +47,7 @@ public class PlayerScript : MonoBehaviour {
         {
             if (!_moving)
             {
-                Debug.Log("Moving set to true");
+                //Debug.Log("Moving set to true");
                 _moving = true;
                 transform.Translate(Vector3.up * 0.5f);
             }
@@ -56,14 +56,14 @@ public class PlayerScript : MonoBehaviour {
         {
             if (!_moving)
             {
-                Debug.Log("Moving set to true");
+                //Debug.Log("Moving set to true");
                 _moving = true;
                 transform.Translate(Vector3.down * 0.5f);
             }
         }
         else if (_moving)
         {
-            Debug.Log("Moving set to false");
+            //Debug.Log("Moving set to false");
             _moving = false;
         }
     }
