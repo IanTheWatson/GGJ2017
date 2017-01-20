@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class MusicMasterScript : MonoBehaviour {
@@ -28,7 +29,7 @@ public class MusicMasterScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Song = SongInfo.ParseSong(SongFilePath);
+        Song = SongInfo.ParseSong(Path.Combine(Application.dataPath, SongFilePath));
         BuildNotes(Song.MelodyTrack);
     }
 	
