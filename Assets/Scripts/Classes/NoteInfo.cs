@@ -8,7 +8,7 @@ public static class NoteInfo
 {
     readonly static float scale = Mathf.Pow(2f, 1.0f / 12f);
     public const int MajorBaseNote = 6;
-    public const int MinorBaseNote = 6;
+    public const int MinorBaseNote = 8;
 
     public static readonly int[] MajorScale = new int[]
     {
@@ -32,15 +32,21 @@ public static class NoteInfo
         10, //G
     };
 
-    public static float GetPitchFromPosition(int position, bool minorScale = false)
+    public static float GetPitchFromPosition(int position, bool minorScale = false, int mod = 0)
     {
         var normalisedPosition = position + (minorScale ? MinorBaseNote : MajorBaseNote);
         var absPosition = Mathf.Abs(normalisedPosition);
 
         int octave = normalisedPosition / 7;
+        if (normalisedPosition < 0)
+        {
+            octave -= 1;
+        }
+
+
         int scaleNote = absPosition % 7;
 
-        int offset = (minorScale ? MinorScale[scaleNote] : MajorScale[scaleNote]) + (octave * 12);
+        int offset = (minorScale ? MinorScale[scaleNote] : MajorScale[scaleNote]) + (octave * 12) - (minorScale ? MinorBaseNote - MajorBaseNote + 1 : 0) + mod;
         Debug.Log("Offset:" + offset);
         Debug.Log("Math:" + Mathf.Pow(scale, offset));
         return (Mathf.Pow(scale, offset));

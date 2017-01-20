@@ -61,7 +61,7 @@ public class PlayerScript : MonoBehaviour {
         ).FirstOrDefault();
         if (currentNote != null)
         {
-            noteSound.pitch = NoteInfo.GetPitchFromPosition((int)(currentNote.transform.position.y * 2));
+            noteSound.pitch = NoteInfo.GetPitchFromPosition((int)(currentNote.transform.position.y * 2), true);
             noteSound.Play();
         }
     }
