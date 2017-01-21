@@ -21,6 +21,8 @@ public class SongInfo
                     case "M:":
                         song.MelodyTrack = TrackInfo.ParseTrack(line.Substring(2));
                         break;
+                    case "//":
+                        break;
                     default:
                         throw new InvalidOperationException("Unrecognised start of string: " + designation);
                 }
