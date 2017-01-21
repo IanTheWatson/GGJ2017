@@ -196,6 +196,9 @@ public class MusicMasterScript : MonoBehaviour {
                         Scoring[currentBeat] = false;
                         CurrentStreak = 0;
                         HarmonyLevel = 0;
+                        noteSound.Stop();
+                        harmony1Sound.Stop();
+                        harmony2Sound.Stop();
                         if (noteScript != null)
                         {
                             noteScript.FadeNote();
