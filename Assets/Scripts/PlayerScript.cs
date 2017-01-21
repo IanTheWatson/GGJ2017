@@ -25,7 +25,7 @@ public class PlayerScript : MonoBehaviour {
     {
         var movementDistance = master.MovementSpeedPerTick;
         transform.Translate(Vector3.right * movementDistance);
-        playerCamera.transform.position = new Vector3(transform.position.x, playerCamera.transform.position.y, playerCamera.transform.position.z);
+        //playerCamera.transform.position = new Vector3(transform.position.x, playerCamera.transform.position.y, playerCamera.transform.position.z);
         playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         HandleInputs();
 
