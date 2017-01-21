@@ -139,6 +139,19 @@ public class MusicMasterScript : MonoBehaviour {
                     var noteScript = currentNote.noteScript;
                     if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                     {
+                        CurrentStreak++;
+                        if (CurrentStreak >= 10 && HarmonyLevel < 1)
+                        {
+                            playerRef.Repair();
+                            HarmonyLevel = 1;
+                        }
+
+                        if (CurrentStreak >= 20 && HarmonyLevel < 2)
+                        {
+                            HarmonyLevel = 2;
+                        }
+
+                        playerRef.ReactToNote(currentNote.GetNoteColour());
 
                         noteSound.pitch = NoteInfo.GetPitchFromPosition(position);
                         noteSound.Play();
@@ -149,6 +162,7 @@ public class MusicMasterScript : MonoBehaviour {
                             if (hTrackInfo != null && hTrackInfo is NoteInfo)
                             {
                                 var hNoteInfo = hTrackInfo as NoteInfo;
+                                hNoteInfo.noteScript.Explode();
                                 harmony1Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
                                 harmony1Sound.Play();
                             }
@@ -160,6 +174,7 @@ public class MusicMasterScript : MonoBehaviour {
                             if (hTrackInfo != null && hTrackInfo is NoteInfo)
                             {
                                 var hNoteInfo = hTrackInfo as NoteInfo;
+                                hNoteInfo.noteScript.Explode();
                                 harmony2Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
                                 harmony2Sound.Play();
                             }
@@ -170,7 +185,6 @@ public class MusicMasterScript : MonoBehaviour {
                             nextBarrier.Strength -= 1;
                         }
                         Scoring[currentBeat] = true;
-                        CurrentStreak++;
 
                         if (noteScript != null)
                         {
@@ -181,6 +195,7 @@ public class MusicMasterScript : MonoBehaviour {
                     {
                         Scoring[currentBeat] = false;
                         CurrentStreak = 0;
+                        HarmonyLevel = 0;
                         if (noteScript != null)
                         {
                             noteScript.FadeNote();
@@ -192,6 +207,7 @@ public class MusicMasterScript : MonoBehaviour {
                     var currentBarrier = currentTrackInfo as BarrierInfo;
                     if (!currentBarrier.Destroyed)
                     {
+                        CurrentStreak = 0;
                         if(playerRef.TakeDamage())
                         {
                             dead = true;

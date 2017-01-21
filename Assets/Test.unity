@@ -691,16 +691,6 @@ Prefab:
       objectReference: {fileID: 203730916}
     - target: {fileID: 114544719599900324, guid: 9e0ef50a1ccc00c45a91354343a95c8d,
         type: 2}
-      propertyPath: StreakUI
-      value: 
-      objectReference: {fileID: 1633621071}
-    - target: {fileID: 114544719599900324, guid: 9e0ef50a1ccc00c45a91354343a95c8d,
-        type: 2}
-      propertyPath: HarmonyLevel
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114544719599900324, guid: 9e0ef50a1ccc00c45a91354343a95c8d,
-        type: 2}
       propertyPath: harmony1Sound
       value: 
       objectReference: {fileID: 1833646243}
@@ -709,6 +699,11 @@ Prefab:
       propertyPath: harmony2Sound
       value: 
       objectReference: {fileID: 1158963602}
+    - target: {fileID: 114544719599900324, guid: 9e0ef50a1ccc00c45a91354343a95c8d,
+        type: 2}
+      propertyPath: StreakUI
+      value: 
+      objectReference: {fileID: 1633621071}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e0ef50a1ccc00c45a91354343a95c8d, type: 2}
   m_IsPrefabParent: 0
@@ -1723,7 +1718,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1893314530}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 3, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

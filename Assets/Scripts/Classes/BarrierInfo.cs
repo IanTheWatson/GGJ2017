@@ -23,7 +23,7 @@ public class BarrierInfo : TrackPartInfo
     {
         get
         {
-            return PercentStrength < 0.25f;
+            return PercentStrength <= 0.25f;
         }
     }
 
