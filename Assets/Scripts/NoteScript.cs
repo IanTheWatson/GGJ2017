@@ -80,7 +80,7 @@ public class NoteScript : MonoBehaviour {
             SpriteRenderer.enabled = true;
             if (HarmonyLevel > 0)
             {
-                SpriteRenderer.color = new Color(SpriteRenderer.color.r, SpriteRenderer.color.g, SpriteRenderer.color.b, 0.2f);
+                SpriteRenderer.color = new Color(SpriteRenderer.color.r, SpriteRenderer.color.g, SpriteRenderer.color.b, exploding ? 1f : 0.2f);
             }
         }
     }

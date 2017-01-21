@@ -9,6 +9,7 @@ public class PlayerScript : MonoBehaviour {
     public Camera playerCamera;
     public ParticleSystem playerParticle;
     public GameObject stave;
+    public SpriteRenderer motionBlur;
 
     public RuntimeAnimatorController normalAnimation;
     public RuntimeAnimatorController damagedAnimation;
@@ -67,8 +68,7 @@ public class PlayerScript : MonoBehaviour {
             }
             else
             {
-                var xColour = Color.Lerp(new Color(1, 1, 1, 1), newColour, 1f - (1f / time) * (i + 1f));
-                GetComponent<SpriteRenderer>().color = xColour;
+                GetComponent<SpriteRenderer>().color = Color.Lerp(new Color(1, 1, 1, 1), newColour, 1f - (1f / time) * (i + 1f));
                 transform.localScale = new Vector3(minScale + ((1f - minScale) * (1f / time) * i), minScale + ((1f - minScale) * (1f / time) * i), 1);
             }
 
@@ -85,6 +85,7 @@ public class PlayerScript : MonoBehaviour {
                 //Debug.Log("Moving set to true");
                 _moving = true;
                 transform.Translate(Vector3.up * 0.5f);
+                StartCoroutine(MotionBlur(true));
             }
         }
         else if (Input.GetKey(KeyCode.DownArrow))
@@ -94,12 +95,35 @@ public class PlayerScript : MonoBehaviour {
                 //Debug.Log("Moving set to true");
                 _moving = true;
                 transform.Translate(Vector3.down * 0.5f);
+                StartCoroutine(MotionBlur(false));
             }
         }
         else if (_moving)
         {
             //Debug.Log("Moving set to false");
             _moving = false;
+        }
+    }
+
+    IEnumerator MotionBlur(bool up)
+    {
+        var time = 10;
+        var maxScale = 1.5f;
+        for (int i = 0; i <= time; i++)
+        {
+            if (i == time)
+            {
+                motionBlur.enabled = false;
+            }
+            else
+            {
+                motionBlur.enabled = true;
+                var difference = (maxScale - 1f) * (1f / time) * (i + 1);
+                motionBlur.transform.localScale = new Vector3(1.1f, maxScale - difference, 1);
+                motionBlur.transform.localPosition = new Vector3(0, (maxScale - 1f - difference) * (up ? -1 : 1), 1);
+            }
+
+            yield return null;
         }
     }
 

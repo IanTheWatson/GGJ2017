@@ -946,6 +946,15 @@ Prefab:
       propertyPath: stave
       value: 
       objectReference: {fileID: 1924183840}
+    - target: {fileID: 4471233710868922, guid: db4138281ef96c24fa9ccf2ad4979c87, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212948367948252382, guid: db4138281ef96c24fa9ccf2ad4979c87,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: db4138281ef96c24fa9ccf2ad4979c87, type: 2}
   m_IsPrefabParent: 0
