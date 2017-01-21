@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour {
     public MusicMasterScript master;
     public Camera playerCamera;
     public ParticleSystem playerParticle;
+    public GameObject stave;
 
     bool _moving = false;
 
@@ -25,8 +26,9 @@ public class PlayerScript : MonoBehaviour {
     {
         var movementDistance = master.MovementSpeedPerTick;
         transform.Translate(Vector3.right * movementDistance);
-        //playerCamera.transform.position = new Vector3(transform.position.x, playerCamera.transform.position.y, playerCamera.transform.position.z);
+        playerCamera.transform.position = new Vector3(transform.position.x, playerCamera.transform.position.y, playerCamera.transform.position.z);
         playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        stave.transform.position = new Vector3(transform.position.x, stave.transform.position.y, stave.transform.position.z);
         HandleInputs();
 
         master.CurrentPlayerRow = Mathf.RoundToInt(transform.position.y * 2);
