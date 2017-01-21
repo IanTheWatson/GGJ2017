@@ -129,7 +129,7 @@ public class PlayerScript : MonoBehaviour {
 
     public bool TakeDamage()
     {
-        StartCoroutine(ShowDamageTaken());
+        FlashScreenColour(Color.red, damaged ? 200 : 20);
 
         if (!damaged)
         {
@@ -151,9 +151,13 @@ public class PlayerScript : MonoBehaviour {
         GetComponent<Animator>().runtimeAnimatorController = normalAnimation;
     }
 
-    IEnumerator ShowDamageTaken()
+    public void FlashScreenColour(Color flashColour, int time)
     {
-        var time = damaged ? 200 : 20;
+        StartCoroutine(FlashingScreenColour(flashColour, time));
+    }
+
+    IEnumerator FlashingScreenColour(Color flashColour, int time)
+    {
         for (int i = 0; i <= time; i++)
         {
             if (i == time)
@@ -162,7 +166,7 @@ public class PlayerScript : MonoBehaviour {
             }
             else
             {
-                playerCamera.backgroundColor = new Color(1 - ((1f / time) * (i + 1f)), 0, 0);
+                playerCamera.backgroundColor = Color.Lerp(new Color(0, 0, 0), flashColour, 1 - ((1f / time) * (i + 1f)));
             }
             
             yield return null;
@@ -171,10 +175,16 @@ public class PlayerScript : MonoBehaviour {
 
     public void Pulse()
     {
-        if (damaged && !dead)
+        if (!dead)
         {
-            StartCoroutine(FlashDamage());
+            if (damaged)
+            {
+                StartCoroutine(FlashDamage());
+            }
+
+            ZoomCamera(10, 4.14f);
         }
+        
     }
 
     IEnumerator FlashDamage()
@@ -217,6 +227,30 @@ public class PlayerScript : MonoBehaviour {
                 var scale = maxScale - ((maxScale - minScale) / (time / 2) * (i - (time / 2)));
                 transform.localScale = new Vector3(scale, scale, 1);
             }
+            yield return null;
+        }
+    }
+
+    public void ZoomCamera(int time, float zoomIn)
+    {
+        StartCoroutine(ZoomingCamera(time, zoomIn));
+    }
+
+    IEnumerator ZoomingCamera(int time, float zoomIn)
+    {
+        float standardCameraZoom = 4.219f;
+
+        for (int i = 0; i <= time; i++)
+        {
+            if (i == time)
+            {
+                playerCamera.orthographicSize = standardCameraZoom;
+            }
+            else
+            {
+                playerCamera.orthographicSize = zoomIn + ((1f / time) * (i + 1f) * (standardCameraZoom - zoomIn));
+            }
+
             yield return null;
         }
     }

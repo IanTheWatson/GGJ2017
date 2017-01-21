@@ -144,11 +144,13 @@ public class MusicMasterScript : MonoBehaviour {
                         {
                             playerRef.Repair();
                             HarmonyLevel = 1;
+                            playerRef.FlashScreenColour(new Color(0x42 /255f, 0xb6 /255f, 0xff / 255f), 10);
                         }
 
                         if (CurrentStreak >= 20 && HarmonyLevel < 2)
                         {
                             HarmonyLevel = 2;
+                            playerRef.FlashScreenColour(Color.white, 10);
                         }
 
                         playerRef.ReactToNote(currentNote.GetNoteColour());
@@ -194,6 +196,10 @@ public class MusicMasterScript : MonoBehaviour {
                     else
                     {
                         Scoring[currentBeat] = false;
+                        if (HarmonyLevel > 0)
+                        {
+                            playerRef.FlashScreenColour(Color.gray, 10);
+                        }
                         CurrentStreak = 0;
                         HarmonyLevel = 0;
                         noteSound.Stop();
