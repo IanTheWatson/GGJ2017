@@ -7,7 +7,6 @@ public class PlayerScript : MonoBehaviour {
 
     public MusicMasterScript master;
     public Camera playerCamera;
-    public AudioSource noteSound;
     public ParticleSystem playerParticle;
 
     bool _moving = false;
@@ -30,17 +29,7 @@ public class PlayerScript : MonoBehaviour {
         playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         HandleInputs();
 
-        var notes = FindObjectsOfType<NoteScript>();
-        var currentNote = notes.Where
-        (
-            n => n.transform.position.x >= transform.position.x && n.transform.position.x < transform.position.x + movementDistance &&
-                 n.transform.position.y >= transform.position.y - 0.1f && n.transform.position.y <= transform.position.y + 0.1f
-        ).FirstOrDefault();
-        if (currentNote != null)
-        {
-            noteSound.pitch = NoteInfo.GetPitchFromPosition((int)(currentNote.transform.position.y * 2), true);
-            noteSound.Play();
-        }
+        master.CurrentPlayerRow = Mathf.RoundToInt(transform.position.y * 2);
     }
 
     private void HandleInputs()
