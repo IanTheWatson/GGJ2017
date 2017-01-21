@@ -11,6 +11,8 @@ public class MusicMasterScript : MonoBehaviour {
 
     public NoteScript notePrefab;
 
+    public PlayerScript playerRef;
+
     public BarrierScript barrierPrefab;
 
     public AudioSource drumBeat1;
@@ -18,6 +20,10 @@ public class MusicMasterScript : MonoBehaviour {
     public AudioSource drumBeat2;
 
     public AudioSource noteSound;
+
+    public AudioSource harmony1Sound;
+
+    public AudioSource harmony2Sound;
 
     public NoteScript activeNote;
 
@@ -51,10 +57,14 @@ public class MusicMasterScript : MonoBehaviour {
         }
     }
 
+    public bool dead = false;
+
 	// Use this for initialization
 	void Start () {
         Song = SongInfo.ParseSong(Path.Combine(Application.dataPath, SongFilePath));
         BuildNotes(Song.MelodyTrack);
+        BuildHarmony(Song.Harmony1Track, 1);
+        BuildHarmony(Song.Harmony2Track, 2);
         CurrentStreak = 0;
     }
 
@@ -84,19 +94,12 @@ public class MusicMasterScript : MonoBehaviour {
         private set;
     }
 
-    void FixedUpdate ()
+    void FixedUpdate()
     {
         _ticksUntilNextBeat -= 1;
 
-        if (_ticksUntilNextBeat == 0)
-        {
-            foreach (var note in Song.MelodyTrack.Notes.Skip(currentBeat))
-            {
-                if (note != null && note is NoteInfo)
-                {
-                    (note as NoteInfo).noteScript.GlowNote();
-                }
-            }                   
+        if (!dead && _ticksUntilNextBeat == 0)
+        {               
 
             _ticksUntilNextBeat += TicksPerBeat;
             if (!offBeat)
@@ -108,6 +111,15 @@ public class MusicMasterScript : MonoBehaviour {
                 else
                 {
                     drumBeat1.Play();
+                }
+
+                playerRef.Pulse();
+                foreach (var note in Song.MelodyTrack.Notes.Skip(currentBeat))
+                {
+                    if (note != null && note is NoteInfo)
+                    {
+                        (note as NoteInfo).noteScript.GlowNote();
+                    }
                 }
 
                 beatAlt = !beatAlt;
@@ -128,8 +140,31 @@ public class MusicMasterScript : MonoBehaviour {
                     if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                     {
 
-                        noteSound.pitch = NoteInfo.GetPitchFromPosition(position, true);
+                        noteSound.pitch = NoteInfo.GetPitchFromPosition(position);
                         noteSound.Play();
+
+                        if (HarmonyLevel > 0)
+                        {
+                            var hTrackInfo = Song.Harmony1Track.Notes[currentBeat];
+                            if (hTrackInfo != null && hTrackInfo is NoteInfo)
+                            {
+                                var hNoteInfo = hTrackInfo as NoteInfo;
+                                harmony1Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
+                                harmony1Sound.Play();
+                            }
+                        }
+
+                        if (HarmonyLevel > 1)
+                        {
+                            var hTrackInfo = Song.Harmony2Track.Notes[currentBeat];
+                            if (hTrackInfo != null && hTrackInfo is NoteInfo)
+                            {
+                                var hNoteInfo = hTrackInfo as NoteInfo;
+                                harmony2Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
+                                harmony2Sound.Play();
+                            }
+                        }
+
                         if (nextBarrier != null)
                         {
                             nextBarrier.Strength -= 1;
@@ -155,6 +190,13 @@ public class MusicMasterScript : MonoBehaviour {
                 else if (currentTrackInfo is BarrierInfo)
                 {
                     var currentBarrier = currentTrackInfo as BarrierInfo;
+                    if (!currentBarrier.Destroyed)
+                    {
+                        if(playerRef.TakeDamage())
+                        {
+                            dead = true;
+                        }
+                    }
 
 
                     nextBarrier = Song.MelodyTrack.Notes.Skip(currentBeat + 1).Where(t => t is BarrierInfo).Select(t => t as BarrierInfo).FirstOrDefault();
@@ -168,6 +210,35 @@ public class MusicMasterScript : MonoBehaviour {
             currentBeat++;
         }
     }
+
+    void BuildHarmony(TrackInfo track, int level)
+    {
+        for (int note = 0; note < track.Notes.Count; note++)
+        {
+            var trackPart = track.Notes[note];
+            if (trackPart != null && trackPart is NoteInfo)
+            {
+                var noteInfo = trackPart as NoteInfo;
+                var thisNote = Instantiate(notePrefab);
+                thisNote.noteInfo = noteInfo;
+                noteInfo.noteScript = thisNote;
+                thisNote.masterScript = this;
+
+                thisNote.name = "H" + level.ToString() + ":" + trackPart.ToString();
+                thisNote.HarmonyLevel = level;
+                thisNote.GetComponent<SpriteRenderer>().color = noteInfo.GetNoteColour();
+                thisNote.Glow.color = noteInfo.GetNoteColour();
+                thisNote.transform.position = new Vector3
+                (
+                    note,
+                    noteInfo.GetPosition() / 2f,
+                    0
+                );
+            }
+        }
+    }
+
+    public int HarmonyLevel = 0;
 
     void BuildNotes(TrackInfo track)
     {
@@ -190,6 +261,7 @@ public class MusicMasterScript : MonoBehaviour {
                 var thisNote = Instantiate(notePrefab);
                 thisNote.noteInfo = noteInfo;
                 noteInfo.noteScript = thisNote;
+                thisNote.masterScript = this;
 
                 thisNote.name = trackPart.ToString();
                 thisNote.GetComponent<SpriteRenderer>().color = noteInfo.GetNoteColour();

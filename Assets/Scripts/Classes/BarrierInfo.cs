@@ -19,6 +19,14 @@ public class BarrierInfo : TrackPartInfo
         set;
     }
 
+    public bool Destroyed
+    {
+        get
+        {
+            return PercentStrength < 0.25f;
+        }
+    }
+
     public float PercentStrength
     {
         get

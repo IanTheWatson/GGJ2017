@@ -65,7 +65,7 @@ public class NoteInfo : TrackPartInfo
         }
     }
 
-    public static float GetPitchFromPosition(int position, bool minorScale = false, int mod = 0)
+    public static float GetPitchFromPosition(int position, int mod = 0)
     {
         var normalisedPosition = position + BaseNote;
 

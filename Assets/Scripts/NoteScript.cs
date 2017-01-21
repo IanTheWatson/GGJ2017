@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class NoteScript : MonoBehaviour {
 
+    public MusicMasterScript masterScript;
+
     public NoteInfo noteInfo;
+
+    public int HarmonyLevel = 0;
 
     public SpriteRenderer SpriteRenderer
     {
@@ -64,6 +68,19 @@ public class NoteScript : MonoBehaviour {
             if (Glow.color.a <= 0)
             {
                 Glow.enabled = false;
+            }
+        }
+
+        if (masterScript.HarmonyLevel < HarmonyLevel)
+        {
+            SpriteRenderer.enabled = false;
+        }
+        else
+        {
+            SpriteRenderer.enabled = true;
+            if (HarmonyLevel > 0)
+            {
+                SpriteRenderer.color = new Color(SpriteRenderer.color.r, SpriteRenderer.color.g, SpriteRenderer.color.b, 0.2f);
             }
         }
     }

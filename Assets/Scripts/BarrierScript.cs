@@ -44,7 +44,7 @@ public class BarrierScript : MonoBehaviour {
             }
             else
             {
-                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1 - (0.1f * (i + 1)));
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1 - ((1 / 50f) * (i + 1)));
             }
             
             yield return null;
@@ -59,7 +59,7 @@ public class BarrierScript : MonoBehaviour {
     void FixedUpdate()
     {
         var percentStrength = barrierInfo.PercentStrength;
-        if (percentStrength < 0.25f)
+        if (barrierInfo.Destroyed)
         {
             Rekt();
         }
@@ -67,7 +67,6 @@ public class BarrierScript : MonoBehaviour {
         {
             if (state != 3)
             {
-                Debug.Log(percentStrength);
                 line.Frames = brokenSprites;
                 state = 3;
             }            
@@ -76,7 +75,6 @@ public class BarrierScript : MonoBehaviour {
         {
             if (state != 2)
             {
-                Debug.Log(percentStrength);
                 line.Frames = damagedSprites;
                 state = 2;
             }
@@ -85,7 +83,6 @@ public class BarrierScript : MonoBehaviour {
         {
             if (state != 1)
             {
-                Debug.Log(percentStrength);
                 line.Frames = normalSprites;
                 state = 1;
             }
