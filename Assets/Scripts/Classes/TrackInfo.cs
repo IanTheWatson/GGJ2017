@@ -12,7 +12,7 @@ public class TrackInfo
     {
         TrackInfo track = new TrackInfo()
         {
-            Notes = new NoteInfo[text.Length / 2]
+            Notes = new List<NoteInfo>()
         };
 
         text = text.ToUpper();
@@ -21,7 +21,7 @@ public class TrackInfo
         {
             var thisPart = text.Substring(0, 2);
             text = text.Substring(2);
-            track.Notes[currentIndex] = ParseNote(thisPart);
+            track.Notes.Add(ParseNote(thisPart));
             currentIndex++;
         }
 
@@ -48,7 +48,7 @@ public class TrackInfo
         throw new InvalidOperationException("Unrecognised string: " + text);
     }
 
-    public NoteInfo[] Notes
+    public List<NoteInfo> Notes
     {
         get;
         private set;

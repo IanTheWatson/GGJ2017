@@ -4,8 +4,27 @@ using UnityEngine;
 
 public class NoteScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public SpriteRenderer Glow
+    {
+        get
+        {
+            return transform.Find("Glow").GetComponent<SpriteRenderer>();
+        }
+    }
+
+    public void GlowNote()
+    {
+        Glow.enabled = true;
+        Glow.color = new Color(Glow.color.r, Glow.color.g, Glow.color.b, 1);
+    }
+
+    public void FadeNote()
+    {
+        GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -13,4 +32,16 @@ public class NoteScript : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    void FixedUpdate()
+    {
+        if (Glow.enabled)
+        {
+            Glow.color = new Color(Glow.color.r, Glow.color.g, Glow.color.b, Glow.color.a - 0.05f);
+            if (Glow.color.a <= 0)
+            {
+                Glow.enabled = false;
+            }
+        }
+    }
 }

@@ -39,6 +39,29 @@ public class NoteInfo
     {
         return ((int)Note - BaseNote) + ((Octave - BaseOctave) * 7);
     }
+    
+    public Color GetNoteColour()
+    {
+        switch (Note)
+        {
+            case NoteEnum.A:
+                return new Color(0x3c / 255f, 0x00 / 255f, 0xff / 255f);
+            case NoteEnum.B:
+                return new Color(0xff / 255f, 0x46 / 255f, 0xfe / 255f);
+            case NoteEnum.C:
+                return new Color(0xff / 255f, 0x2d / 255f, 0x2d / 255f);
+            case NoteEnum.D:
+                return new Color(0xfd / 255f, 0x8e / 255f, 0x00 / 255f);
+            case NoteEnum.E:
+                return new Color(0xff / 255f, 0xf6 / 255f, 0x00 / 255f);
+            case NoteEnum.F:
+                return new Color(0x2e / 255f, 0xd2 / 255f, 0x02 / 255f);
+            case NoteEnum.G:
+                return new Color(0x00 / 255f, 0xff / 255f, 0xea / 255f);
+            default:
+                return new Color(0xff / 255f, 0xff / 255f, 0xff / 255f);
+        }
+    }
 
     public static float GetPitchFromPosition(int position, bool minorScale = false, int mod = 0)
     {
