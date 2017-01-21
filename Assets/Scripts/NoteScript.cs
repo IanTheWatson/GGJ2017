@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class NoteScript : MonoBehaviour {
 
+    public SpriteRenderer SpriteRenderer
+    {
+        get
+        {
+            return GetComponent<SpriteRenderer>();
+        }
+    }
+
     public SpriteRenderer Glow
     {
         get
@@ -20,7 +28,20 @@ public class NoteScript : MonoBehaviour {
 
     public void FadeNote()
     {
-        GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        GetComponent<SpriteRenderer>().color = new Color(0.2f, 0.2f, 0.2f, 0.2f);
+    }
+
+    bool exploding = false;
+    public void Explode()
+    {
+        if (!exploding)
+        {
+            exploding = true;
+            var particles = transform.FindChild("Particles").GetComponent<ParticleSystem>();
+            particles.startColor = new Color(SpriteRenderer.color.r, SpriteRenderer.color.g, SpriteRenderer.color.b);
+            particles.Play();
+            SpriteRenderer.color = new Color(1, 1, 1, 1);
+        }        
     }
 
     // Use this for initialization

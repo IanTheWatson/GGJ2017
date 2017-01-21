@@ -90,14 +90,19 @@ public class MusicMasterScript : MonoBehaviour {
             int position;
             if (currentNote != null)
             {
+                var noteScript = GetNoteForNote(currentBeat, Song.MelodyTrack);
                 if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                 {
                     noteSound.pitch = NoteInfo.GetPitchFromPosition(position, true);
                     noteSound.Play();
+
+                    if (noteScript != null)
+                    {
+                        noteScript.Explode();
+                    }
                 }
                 else
-                {
-                    var noteScript = GetNoteForNote(currentBeat, Song.MelodyTrack);
+                {                    
                     if (noteScript != null)
                     {
                         noteScript.FadeNote();
