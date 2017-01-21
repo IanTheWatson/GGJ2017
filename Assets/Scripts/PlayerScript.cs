@@ -49,6 +49,33 @@ public class PlayerScript : MonoBehaviour {
         
     }
 
+    public void ReactToNote(Color noteColour)
+    {
+        StartCoroutine(ReactingToNote(noteColour));
+    }
+
+    IEnumerator ReactingToNote(Color newColour)
+    {
+        var time = 20;
+        var minScale = 0.6f;
+        for (int i = 0; i <= time; i++)
+        {
+            if (i == time)
+            {
+                GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else
+            {
+                var xColour = Color.Lerp(new Color(1, 1, 1, 1), newColour, 1f - (1f / time) * (i + 1f));
+                GetComponent<SpriteRenderer>().color = xColour;
+                transform.localScale = new Vector3(minScale + ((1f - minScale) * (1f / time) * i), minScale + ((1f - minScale) * (1f / time) * i), 1);
+            }
+
+            yield return null;
+        }
+    }
+
     private void HandleInputs()
     {
         if (Input.GetKey(KeyCode.UpArrow))
@@ -92,6 +119,12 @@ public class PlayerScript : MonoBehaviour {
         GetComponent<Animator>().Stop();
         StartCoroutine(Die());
         return true;
+    }
+
+    public void Repair()
+    {
+        damaged = false;
+        GetComponent<Animator>().runtimeAnimatorController = normalAnimation;
     }
 
     IEnumerator ShowDamageTaken()
@@ -140,7 +173,7 @@ public class PlayerScript : MonoBehaviour {
 
     IEnumerator Die()
     {
-        var time = 60;
+        var time = 30;
         var maxScale = 3f;
         var minScale = 0.1f;
 

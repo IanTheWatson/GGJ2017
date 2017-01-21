@@ -63,7 +63,7 @@ public class BarrierScript : MonoBehaviour {
         {
             Rekt();
         }
-        else if (percentStrength < 0.50f)
+        else if (percentStrength <= 0.50f)
         {
             if (state != 3)
             {
@@ -71,7 +71,7 @@ public class BarrierScript : MonoBehaviour {
                 state = 3;
             }            
         }
-        else if (percentStrength < 0.75f)
+        else if (percentStrength <= 0.75f)
         {
             if (state != 2)
             {
