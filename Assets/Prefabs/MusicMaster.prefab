@@ -51,8 +51,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bbee81ecad51b544b0f693f2bc13098, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BPM: 120
+  BPM: 300
   notePrefab: {fileID: 114555684845882866, guid: 2e3ad03053ded9948bcd856578f28b47,
+    type: 2}
+  barrierPrefab: {fileID: 114267548376099782, guid: dc061999f76cc844f9a7a318cc631911,
     type: 2}
   drumBeat1: {fileID: 0}
   drumBeat2: {fileID: 0}

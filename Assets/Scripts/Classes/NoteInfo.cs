@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class NoteInfo
+public class NoteInfo : TrackPartInfo
 {
     readonly static float scale = Mathf.Pow(2f, 1.0f / 12f);
     public const int BaseNote = 6;
 
     public const int MiddleC = 3;
     public const int BaseOctave = 3;
+
+    public NoteScript noteScript;
 
     public NoteEnum Note
     {

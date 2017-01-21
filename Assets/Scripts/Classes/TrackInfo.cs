@@ -12,7 +12,7 @@ public class TrackInfo
     {
         TrackInfo track = new TrackInfo()
         {
-            Notes = new List<NoteInfo>()
+            Notes = new List<TrackPartInfo>()
         };
 
         text = text.ToUpper();
@@ -28,11 +28,16 @@ public class TrackInfo
         return track;
     }
 
-    public static NoteInfo ParseNote(string text)
+    public static TrackPartInfo ParseNote(string text)
     {
         if (text == "--")
         {
             return null;
+        }
+
+        if (text == "||")
+        {
+            return new BarrierInfo();
         }
 
         var note = text[0];
@@ -48,7 +53,7 @@ public class TrackInfo
         throw new InvalidOperationException("Unrecognised string: " + text);
     }
 
-    public List<NoteInfo> Notes
+    public List<TrackPartInfo> Notes
     {
         get;
         private set;

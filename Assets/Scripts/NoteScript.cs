@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NoteScript : MonoBehaviour {
 
+    public NoteInfo noteInfo;
+
     public SpriteRenderer SpriteRenderer
     {
         get

@@ -11,6 +11,8 @@ public class MusicMasterScript : MonoBehaviour {
 
     public NoteScript notePrefab;
 
+    public BarrierScript barrierPrefab;
+
     public AudioSource drumBeat1;
 
     public AudioSource drumBeat2;
@@ -67,14 +69,10 @@ public class MusicMasterScript : MonoBehaviour {
     private bool offBeat = false;
     private int _ticksUntilNextBeat = 1;
     private int currentBeat = 0;
+
+    private BarrierInfo nextBarrier = null;
     
     public int CurrentScore
-    {
-        get;
-        private set;
-    }
-
-    public int MaxScore
     {
         get;
         private set;
@@ -94,11 +92,9 @@ public class MusicMasterScript : MonoBehaviour {
         {
             foreach (var note in Song.MelodyTrack.Notes.Skip(currentBeat))
             {
-                var noteIndex = Song.MelodyTrack.Notes.IndexOf(note);
-                var noteToBeat = GetNoteForNote(noteIndex, Song.MelodyTrack);
-                if (noteToBeat != null)
+                if (note is NoteInfo)
                 {
-                    noteToBeat.GlowNote();
+                    (note as NoteInfo).noteScript.GlowNote();
                 }
             }                   
 
@@ -120,32 +116,48 @@ public class MusicMasterScript : MonoBehaviour {
             offBeat = !offBeat;
             
 
-            var currentNote = Song.MelodyTrack.Notes[currentBeat];
+            var currentTrackInfo = Song.MelodyTrack.Notes[currentBeat];
             int position;
-            if (currentNote != null)
+            if (currentTrackInfo != null)
             {
-                var noteScript = GetNoteForNote(currentBeat, Song.MelodyTrack);
-                if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
+                if (currentTrackInfo is NoteInfo)
                 {
+                    var currentNote = currentTrackInfo as NoteInfo;
 
-                    noteSound.pitch = NoteInfo.GetPitchFromPosition(position, true);
-                    noteSound.Play();
-                    Scoring[currentBeat] = true;
-                    CurrentStreak++;
-
-                    if (noteScript != null)
+                    var noteScript = currentNote.noteScript;
+                    if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                     {
-                        noteScript.Explode();
+
+                        noteSound.pitch = NoteInfo.GetPitchFromPosition(position, true);
+                        noteSound.Play();
+                        if (nextBarrier != null)
+                        {
+                            nextBarrier.Strength -= 1;
+                        }
+                        Scoring[currentBeat] = true;
+                        CurrentStreak++;
+
+                        if (noteScript != null)
+                        {
+                            noteScript.Explode();
+                        }
+                    }
+                    else
+                    {
+                        Scoring[currentBeat] = false;
+                        CurrentStreak = 0;
+                        if (noteScript != null)
+                        {
+                            noteScript.FadeNote();
+                        }
                     }
                 }
-                else
+                else if (currentTrackInfo is BarrierInfo)
                 {
-                    Scoring[currentBeat] = false;
-                    CurrentStreak = 0;
-                    if (noteScript != null)
-                    {
-                        noteScript.FadeNote();
-                    }                    
+                    var currentBarrier = currentTrackInfo as BarrierInfo;
+
+
+                    nextBarrier = Song.MelodyTrack.Notes.Skip(currentBeat + 1).Where(t => t is BarrierInfo).Select(t => t as BarrierInfo).FirstOrDefault();
                 }
             }
 
@@ -157,40 +169,68 @@ public class MusicMasterScript : MonoBehaviour {
         }
     }
 
-    NoteScript GetNoteForNote(int position, TrackInfo track)
-    {
-        var noteInfo = track.Notes[position];
-        if (noteInfo == null)
-        {
-            return null;
-        }
-
-        return FindObjectsOfType<NoteScript>().Where(n => Mathf.RoundToInt(n.transform.position.y * 2) == noteInfo.GetPosition() && Mathf.RoundToInt(n.transform.position.x) == position).FirstOrDefault();
-    }
-
     void BuildNotes(TrackInfo track)
     {
         Scoring = new bool?[track.Notes.Count];
 
+        var firstNoteInSection = 0;
+
         for (int note = 0; note < track.Notes.Count; note++)
         {
-            var thisNoteInfo = track.Notes[note];
-            if (thisNoteInfo != null)
+            var trackPart = track.Notes[note];
+            if (trackPart == null)
             {
+                Scoring[note] = true;
+            }
+            else if (trackPart is NoteInfo)
+            {
+                var noteInfo = trackPart as NoteInfo;
                 Scoring[note] = null;
+
                 var thisNote = Instantiate(notePrefab);
-                thisNote.name = thisNoteInfo.ToString();
-                thisNote.GetComponent<SpriteRenderer>().color = thisNoteInfo.GetNoteColour();
-                thisNote.Glow.color = thisNoteInfo.GetNoteColour();
+                thisNote.noteInfo = noteInfo;
+                noteInfo.noteScript = thisNote;
+
+                thisNote.name = trackPart.ToString();
+                thisNote.GetComponent<SpriteRenderer>().color = noteInfo.GetNoteColour();
+                thisNote.Glow.color = noteInfo.GetNoteColour();
                 thisNote.transform.position = new Vector3
                 (
                     note,
-                    thisNoteInfo.GetPosition() / 2f,
+                    noteInfo.GetPosition() / 2f,
                     0
                 );
             }
+            else if(trackPart is BarrierInfo)
+            {
+                var barrierInfo = trackPart as BarrierInfo;
+                Scoring[note] = true;
+                barrierInfo.FirstNote = firstNoteInSection;
+                barrierInfo.LastNote = note - 1;
+                barrierInfo.MaxStrength = Song.MelodyTrack.Notes.Skip(barrierInfo.FirstNote).Take(barrierInfo.LastNote - barrierInfo.FirstNote + 1).Where(t => t is NoteInfo).Count();
+                barrierInfo.Strength = barrierInfo.MaxStrength;
+
+                firstNoteInSection = note + 1;
+
+                var thisBarrier = Instantiate(barrierPrefab);
+                thisBarrier.barrierInfo = barrierInfo;
+                barrierInfo.barrierScript = thisBarrier;
+
+                thisBarrier.transform.position = new Vector3
+                (
+                    note,
+                    0,
+                    0
+                );
+
+                if (nextBarrier == null)
+                {
+                    nextBarrier = barrierInfo;
+                }
+            }
             else
             {
+                //to do
                 Scoring[note] = true;
             }
         }
