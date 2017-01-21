@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MusicMasterScript : MonoBehaviour {
 
@@ -17,6 +18,8 @@ public class MusicMasterScript : MonoBehaviour {
     public AudioSource noteSound;
 
     public NoteScript activeNote;
+
+    public Text StreakUI;
 
     public int CurrentPlayerRow;
 
@@ -50,7 +53,10 @@ public class MusicMasterScript : MonoBehaviour {
 	void Start () {
         Song = SongInfo.ParseSong(Path.Combine(Application.dataPath, SongFilePath));
         BuildNotes(Song.MelodyTrack);
+        CurrentStreak = 0;
     }
+
+    public bool?[] Scoring;
 	
 	// Update is called once per frame
 	void Update () {
@@ -60,6 +66,13 @@ public class MusicMasterScript : MonoBehaviour {
     private bool beatAlt = false;
     private int _ticksUntilNextBeat = 1;
     private int currentBeat = 0;
+
+    public int CurrentStreak
+    {
+        get;
+        private set;
+    }
+
     void FixedUpdate ()
     {
         _ticksUntilNextBeat -= 1;
@@ -93,8 +106,11 @@ public class MusicMasterScript : MonoBehaviour {
                 var noteScript = GetNoteForNote(currentBeat, Song.MelodyTrack);
                 if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                 {
+
                     noteSound.pitch = NoteInfo.GetPitchFromPosition(position, true);
                     noteSound.Play();
+                    Scoring[currentBeat] = true;
+                    CurrentStreak++;
 
                     if (noteScript != null)
                     {
@@ -102,13 +118,17 @@ public class MusicMasterScript : MonoBehaviour {
                     }
                 }
                 else
-                {                    
+                {
+                    Scoring[currentBeat] = false;
+                    CurrentStreak = 0;
                     if (noteScript != null)
                     {
                         noteScript.FadeNote();
                     }                    
                 }
             }
+
+            StreakUI.text = "Current Streak: " + CurrentStreak.ToString();
             
 
             beatAlt = !beatAlt;
@@ -129,11 +149,14 @@ public class MusicMasterScript : MonoBehaviour {
 
     void BuildNotes(TrackInfo track)
     {
+        Scoring = new bool?[track.Notes.Count];
+
         for (int note = 0; note < track.Notes.Count; note++)
         {
             var thisNoteInfo = track.Notes[note];
             if (thisNoteInfo != null)
             {
+                Scoring[note] = null;
                 var thisNote = Instantiate(notePrefab);
                 thisNote.name = thisNoteInfo.ToString();
                 thisNote.GetComponent<SpriteRenderer>().color = thisNoteInfo.GetNoteColour();
@@ -144,6 +167,10 @@ public class MusicMasterScript : MonoBehaviour {
                     thisNoteInfo.GetPosition() / 2f,
                     0
                 );
+            }
+            else
+            {
+                Scoring[note] = true;
             }
         }
     }
