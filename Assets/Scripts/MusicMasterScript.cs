@@ -92,7 +92,7 @@ public class MusicMasterScript : MonoBehaviour {
         {
             foreach (var note in Song.MelodyTrack.Notes.Skip(currentBeat))
             {
-                if (note is NoteInfo)
+                if (note != null && note is NoteInfo)
                 {
                     (note as NoteInfo).noteScript.GlowNote();
                 }

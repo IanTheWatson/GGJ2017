@@ -10,6 +10,14 @@ public class BarrierScript : MonoBehaviour {
     public Sprite[] damagedSprites;
     public Sprite[] brokenSprites;
 
+    private SpriteRenderer sprite
+    {
+        get
+        {
+            return line.GetComponent<SpriteRenderer>();
+        }
+    }
+
     public StaveLineScript line;
 
     int state = -1;
@@ -24,10 +32,38 @@ public class BarrierScript : MonoBehaviour {
 		
 	}
 
+    IEnumerator RektNess()
+    {
+        var limit = 50;
+
+        for (int i = 0; i <= limit; i++)
+        {
+            if (i >= limit)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1 - (0.1f * (i + 1)));
+            }
+            
+            yield return null;
+        }
+    }
+
+    void Rekt()
+    {
+        StartCoroutine(RektNess());
+    }
+
     void FixedUpdate()
     {
         var percentStrength = barrierInfo.PercentStrength;
-        if (percentStrength < 0.33f)
+        if (percentStrength < 0.25f)
+        {
+            Rekt();
+        }
+        else if (percentStrength < 0.50f)
         {
             if (state != 3)
             {
@@ -36,7 +72,7 @@ public class BarrierScript : MonoBehaviour {
                 state = 3;
             }            
         }
-        else if (percentStrength < 0.67f)
+        else if (percentStrength < 0.75f)
         {
             if (state != 2)
             {
