@@ -45,7 +45,7 @@ public class MusicMasterScript : MonoBehaviour {
     {
         get
         {
-            return (int)(1 / (BPS * Time.fixedDeltaTime));
+            return (int)(1 / (MovementSpeedPerTick));
         }
     }
 
@@ -64,8 +64,21 @@ public class MusicMasterScript : MonoBehaviour {
 	}
 
     private bool beatAlt = false;
+    private bool offBeat = false;
     private int _ticksUntilNextBeat = 1;
     private int currentBeat = 0;
+    
+    public int CurrentScore
+    {
+        get;
+        private set;
+    }
+
+    public int MaxScore
+    {
+        get;
+        private set;
+    }
 
     public int CurrentStreak
     {
@@ -90,14 +103,22 @@ public class MusicMasterScript : MonoBehaviour {
             }                   
 
             _ticksUntilNextBeat += TicksPerBeat;
-            if (beatAlt)
+            if (!offBeat)
             {
-                drumBeat2.Play();
+                if (beatAlt)
+                {
+                    drumBeat2.Play();
+                }
+                else
+                {
+                    drumBeat1.Play();
+                }
+
+                beatAlt = !beatAlt;
             }
-            else
-            {
-                drumBeat1.Play();
-            }
+
+            offBeat = !offBeat;
+            
 
             var currentNote = Song.MelodyTrack.Notes[currentBeat];
             int position;
@@ -131,7 +152,7 @@ public class MusicMasterScript : MonoBehaviour {
             StreakUI.text = "Current Streak: " + CurrentStreak.ToString();
             
 
-            beatAlt = !beatAlt;
+            
             currentBeat++;
         }
     }
