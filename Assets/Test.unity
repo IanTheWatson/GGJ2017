@@ -684,6 +684,11 @@ Prefab:
       propertyPath: noteSound
       value: 
       objectReference: {fileID: 203730916}
+    - target: {fileID: 114544719599900324, guid: 9e0ef50a1ccc00c45a91354343a95c8d,
+        type: 2}
+      propertyPath: StreakUI
+      value: 
+      objectReference: {fileID: 1633621071}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e0ef50a1ccc00c45a91354343a95c8d, type: 2}
   m_IsPrefabParent: 0
@@ -1215,7 +1220,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -308.5, y: 199}
+  m_AnchoredPosition: {x: -308.5, y: 140.5}
   m_SizeDelta: {x: 160, y: 30.062}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1633621071
@@ -1250,7 +1255,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 'Current Streak:
+
+    Total Score:'
 --- !u!222 &1633621072
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -56,4 +56,8 @@ MonoBehaviour:
     type: 2}
   drumBeat1: {fileID: 0}
   drumBeat2: {fileID: 0}
+  noteSound: {fileID: 0}
+  activeNote: {fileID: 0}
+  StreakUI: {fileID: 0}
+  CurrentPlayerRow: 0
   SongFilePath: music.txt
