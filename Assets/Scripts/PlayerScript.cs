@@ -41,6 +41,11 @@ public class PlayerScript : MonoBehaviour {
 
     void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         if (!dead)
         {
             if (!win)

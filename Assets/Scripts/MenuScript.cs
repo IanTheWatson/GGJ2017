@@ -16,6 +16,11 @@ public class MenuScript : MonoBehaviour {
 
     void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         if (Input.anyKey)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
