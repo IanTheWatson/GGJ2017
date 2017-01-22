@@ -242,7 +242,7 @@ public class MusicMasterScript : MonoBehaviour {
                 }
             }
 
-            ScoreUI.text = (CurrentScore * 10).ToString();
+            ScoreUI.text = (CurrentScore * 17).ToString();
             StreakUI.text = HarmonyLevel > 0 ? "X" + (HarmonyLevel + 1).ToString() : "";
             
 
