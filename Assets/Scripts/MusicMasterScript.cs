@@ -29,6 +29,8 @@ public class MusicMasterScript : MonoBehaviour {
 
     public Text StreakUI;
 
+    public Text ScoreUI;
+
     public int CurrentPlayerRow;
 
     public float BPS
@@ -66,6 +68,7 @@ public class MusicMasterScript : MonoBehaviour {
         BuildHarmony(Song.Harmony1Track, 1);
         BuildHarmony(Song.Harmony2Track, 2);
         CurrentStreak = 0;
+        CurrentScore = 0;
     }
 
     public bool?[] Scoring;
@@ -140,18 +143,29 @@ public class MusicMasterScript : MonoBehaviour {
                     if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                     {
                         CurrentStreak++;
-                        if (CurrentStreak >= 10 && HarmonyLevel < 1)
+                        CurrentScore++;
+
+                        if (CurrentStreak >= 10)
                         {
-                            playerRef.Repair();
-                            HarmonyLevel = 1;
-                            playerRef.FlashScreenColour(new Color(0x42 /255f, 0xb6 /255f, 0xff / 255f), 10);
+                            CurrentScore++;
+                            if (HarmonyLevel < 1)
+                            {
+                                playerRef.Repair();
+                                HarmonyLevel = 1;
+                                playerRef.FlashScreenColour(new Color(0x42 / 255f, 0xb6 / 255f, 0xff / 255f), 10);
+                            }                            
                         }
 
-                        if (CurrentStreak >= 20 && HarmonyLevel < 2)
+                        if (CurrentStreak >= 20)
                         {
-                            HarmonyLevel = 2;
-                            playerRef.FlashScreenColour(Color.white, 10);
+                            CurrentScore++;
+                            if (HarmonyLevel < 2)
+                            {
+                                HarmonyLevel = 2;
+                                playerRef.FlashScreenColour(Color.white, 10);
+                            }
                         }
+
 
                         playerRef.ReactToNote(currentNote.GetNoteColour());
 
@@ -228,7 +242,8 @@ public class MusicMasterScript : MonoBehaviour {
                 }
             }
 
-            StreakUI.text = "Current Streak: " + CurrentStreak.ToString();
+            ScoreUI.text = (CurrentScore * 10).ToString();
+            StreakUI.text = HarmonyLevel > 0 ? "X" + (HarmonyLevel + 1).ToString() : "";
             
 
             
