@@ -27,9 +27,13 @@ public class MusicMasterScript : MonoBehaviour {
 
     public NoteScript activeNote;
 
+    public BackgroundScript[] backgrounds;
+
     public Text StreakUI;
 
     public Text ScoreUI;
+
+    public Text RestartUI;
 
     public int CurrentPlayerRow;
 
@@ -60,6 +64,8 @@ public class MusicMasterScript : MonoBehaviour {
     }
 
     public bool dead = false;
+
+    bool started = false;
 
 	// Use this for initialization
 	void Start () {
@@ -99,6 +105,17 @@ public class MusicMasterScript : MonoBehaviour {
 
     void FixedUpdate()
     {
+        if (!started)
+        {
+            playerRef.FlashScreenColour(Color.white, 30);
+            started = true;
+        }
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
+        }        
+
         _ticksUntilNextBeat -= 1;
 
         if (!dead && _ticksUntilNextBeat == 0)
@@ -117,6 +134,11 @@ public class MusicMasterScript : MonoBehaviour {
                 }
 
                 playerRef.Pulse();
+                foreach (var background in backgrounds)
+                {
+                    background.Pulse(playerRef.damaged, HarmonyLevel >= 2);
+                }
+
                 foreach (var note in Song.MelodyTrack.Notes.Skip(currentBeat))
                 {
                     if (note != null && note is NoteInfo)
@@ -234,6 +256,7 @@ public class MusicMasterScript : MonoBehaviour {
                         if(playerRef.TakeDamage())
                         {
                             dead = true;
+                            RestartUI.enabled = true;
                         }
                     }
 

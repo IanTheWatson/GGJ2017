@@ -63,7 +63,12 @@ MonoBehaviour:
   harmony1Sound: {fileID: 0}
   harmony2Sound: {fileID: 0}
   activeNote: {fileID: 0}
+  backgrounds:
+  - {fileID: 0}
+  - {fileID: 0}
   StreakUI: {fileID: 0}
+  ScoreUI: {fileID: 0}
+  RestartUI: {fileID: 0}
   CurrentPlayerRow: 0
   SongFilePath: music.txt
   dead: 0

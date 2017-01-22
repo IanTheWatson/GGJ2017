@@ -136,6 +136,7 @@ MonoBehaviour:
   playerParticle: {fileID: 198452965131701436}
   stave: {fileID: 0}
   motionBlur: {fileID: 212948367948252382}
+  background: {fileID: 0}
   normalAnimation: {fileID: 9100000, guid: a1b4ad45170fb6c4294d58dff5538191, type: 2}
   damagedAnimation: {fileID: 9100000, guid: 8f00bd46c541c614c8b01644443aef81, type: 2}
 --- !u!198 &198452965131701436
@@ -2831,7 +2832,7 @@ SpriteRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1924897816542294}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_MotionVectors: 1

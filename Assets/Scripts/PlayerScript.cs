@@ -10,13 +10,14 @@ public class PlayerScript : MonoBehaviour {
     public ParticleSystem playerParticle;
     public GameObject stave;
     public SpriteRenderer motionBlur;
+    public GameObject background;
 
     public RuntimeAnimatorController normalAnimation;
     public RuntimeAnimatorController damagedAnimation;
 
     bool _moving = false;
 
-    bool damaged = false;
+    public bool damaged = false;
 
     bool dead = false;
 
@@ -38,6 +39,7 @@ public class PlayerScript : MonoBehaviour {
             transform.Translate(Vector3.right * movementDistance);
             playerCamera.transform.position = new Vector3(transform.position.x + 3, playerCamera.transform.position.y, playerCamera.transform.position.z);
             playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            background.transform.position = new Vector3(transform.position.x + 3, 0, -2);
             stave.transform.position = new Vector3(transform.position.x + 3, stave.transform.position.y, stave.transform.position.z);
             HandleInputs();
 
