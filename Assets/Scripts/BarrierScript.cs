@@ -61,30 +61,43 @@ public class BarrierScript : MonoBehaviour {
         var percentStrength = barrierInfo.PercentStrength;
         if (barrierInfo.Destroyed)
         {
+            sprite.color = new Color(1, 1, 1, 1);
             Rekt();
-        }
-        else if (percentStrength <= 0.50f)
-        {
-            if (state != 3)
-            {
-                line.Frames = brokenSprites;
-                state = 3;
-            }            
-        }
-        else if (percentStrength <= 0.75f)
-        {
-            if (state != 2)
-            {
-                line.Frames = damagedSprites;
-                state = 2;
-            }
         }
         else
         {
-            if (state != 1)
+            if (percentStrength <= 0.50f)
             {
-                line.Frames = normalSprites;
-                state = 1;
+                if (state != 3)
+                {
+                    line.Frames = brokenSprites;
+                    state = 3;
+                }
+            }
+            else if (percentStrength <= 0.75f)
+            {
+                if (state != 2)
+                {
+                    line.Frames = damagedSprites;
+                    state = 2;
+                }
+            }
+            else
+            {
+                if (state != 1)
+                {
+                    line.Frames = normalSprites;
+                    state = 1;
+                }
+            }
+
+            if (Random.Range(0f, 1f) > 0.5f)
+            {
+                sprite.color = Color.Lerp(new Color(1, 1, 1, 1), new Color(1, 0, 0, 1), Random.Range(0.5f, 1f));
+            }
+            else
+            {
+                sprite.color = new Color(1, 1, 1, 1);
             }
         }
     }
