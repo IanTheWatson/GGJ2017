@@ -62,6 +62,7 @@ MonoBehaviour:
   noteSound: {fileID: 0}
   harmony1Sound: {fileID: 0}
   harmony2Sound: {fileID: 0}
+  damageSound: {fileID: 0}
   activeNote: {fileID: 0}
   backgrounds:
   - {fileID: 0}

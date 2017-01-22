@@ -25,6 +25,8 @@ public class MusicMasterScript : MonoBehaviour {
 
     public AudioSource harmony2Sound;
 
+    public AudioSource damageSound;
+
     public NoteScript activeNote;
 
     public BackgroundScript[] backgrounds;
@@ -259,6 +261,7 @@ public class MusicMasterScript : MonoBehaviour {
                         if (!currentBarrier.Destroyed)
                         {
                             CurrentStreak = 0;
+                            damageSound.Play();
                             if (playerRef.TakeDamage())
                             {
                                 dead = true;
