@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour {
     public MusicMasterScript master;
     public Camera playerCamera;
     public ParticleSystem playerParticle;
+    public ParticleSystem victoryParticles;
     public GameObject stave;
     public SpriteRenderer motionBlur;
     public GameObject background;
@@ -20,6 +21,7 @@ public class PlayerScript : MonoBehaviour {
     public bool damaged = false;
 
     bool dead = false;
+    bool win = false;
 
 	// Use this for initialization
 	void Start () {
@@ -31,16 +33,26 @@ public class PlayerScript : MonoBehaviour {
 		
 	}
 
+    public void Win()
+    {
+        victoryParticles.Play();
+        win = true;
+    }
+
     void FixedUpdate()
     {
         if (!dead)
         {
-            var movementDistance = master.MovementSpeedPerTick;
-            transform.Translate(Vector3.right * movementDistance);
-            playerCamera.transform.position = new Vector3(transform.position.x + 3, playerCamera.transform.position.y, playerCamera.transform.position.z);
-            playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            background.transform.position = new Vector3(transform.position.x + 3, 0, -2);
-            stave.transform.position = new Vector3(transform.position.x + 3, stave.transform.position.y, stave.transform.position.z);
+            if (!win)
+            {
+                var movementDistance = master.MovementSpeedPerTick;
+                transform.Translate(Vector3.right * movementDistance);
+                playerCamera.transform.position = new Vector3(transform.position.x + 3, playerCamera.transform.position.y, playerCamera.transform.position.z);
+                playerParticle.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+                background.transform.position = new Vector3(transform.position.x + 3, 0, -2);
+                stave.transform.position = new Vector3(transform.position.x + 3, stave.transform.position.y, stave.transform.position.z);
+            }
+            
             HandleInputs();
 
             master.CurrentPlayerRow = Mathf.RoundToInt(transform.position.y * 2);

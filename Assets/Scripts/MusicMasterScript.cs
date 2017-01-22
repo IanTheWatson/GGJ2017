@@ -35,6 +35,8 @@ public class MusicMasterScript : MonoBehaviour {
 
     public Text RestartUI;
 
+    public Text VictoryUI;
+
     public int CurrentPlayerRow;
 
     public float BPS
@@ -67,9 +69,11 @@ public class MusicMasterScript : MonoBehaviour {
 
     bool started = false;
 
+    bool victory = false;
+
 	// Use this for initialization
 	void Start () {
-        Song = SongInfo.ParseSong(Path.Combine(Application.dataPath, SongFilePath));
+        Song = SongInfo.ParseSong(Path.Combine(Application.streamingAssetsPath, SongFilePath));
         BuildNotes(Song.MelodyTrack);
         BuildHarmony(Song.Harmony1Track, 1);
         BuildHarmony(Song.Harmony2Track, 2);
@@ -151,119 +155,148 @@ public class MusicMasterScript : MonoBehaviour {
             }
 
             offBeat = !offBeat;
-            
 
-            var currentTrackInfo = Song.MelodyTrack.Notes[currentBeat];
-            int position;
-            if (currentTrackInfo != null)
+
+            if (currentBeat < Song.MelodyTrack.Notes.Count)
             {
-                if (currentTrackInfo is NoteInfo)
+                var currentTrackInfo = Song.MelodyTrack.Notes[currentBeat];
+                int position;
+                if (currentTrackInfo != null)
                 {
-                    var currentNote = currentTrackInfo as NoteInfo;
-
-                    var noteScript = currentNote.noteScript;
-                    if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
+                    if (currentTrackInfo is NoteInfo)
                     {
-                        CurrentStreak++;
-                        CurrentScore++;
+                        var currentNote = currentTrackInfo as NoteInfo;
 
-                        if (CurrentStreak >= 10)
+                        var noteScript = currentNote.noteScript;
+                        if ((position = currentNote.GetPosition()) == CurrentPlayerRow)
                         {
+                            CurrentStreak++;
                             CurrentScore++;
-                            if (HarmonyLevel < 1)
-                            {
-                                playerRef.Repair();
-                                HarmonyLevel = 1;
-                                playerRef.FlashScreenColour(new Color(0x42 / 255f, 0xb6 / 255f, 0xff / 255f), 10);
-                            }                            
-                        }
 
-                        if (CurrentStreak >= 20)
-                        {
-                            CurrentScore++;
-                            if (HarmonyLevel < 2)
+                            if (CurrentStreak >= 10)
                             {
-                                HarmonyLevel = 2;
-                                playerRef.FlashScreenColour(Color.white, 10);
+                                CurrentScore++;
+                                if (HarmonyLevel < 1)
+                                {
+                                    playerRef.Repair();
+                                    HarmonyLevel = 1;
+                                    playerRef.FlashScreenColour(new Color(0x42 / 255f, 0xb6 / 255f, 0xff / 255f), 10);
+                                }
+                            }
+
+                            if (CurrentStreak >= 20)
+                            {
+                                CurrentScore++;
+                                if (HarmonyLevel < 2)
+                                {
+                                    HarmonyLevel = 2;
+                                    playerRef.FlashScreenColour(Color.white, 10);
+                                }
+                            }
+
+
+                            playerRef.ReactToNote(currentNote.GetNoteColour());
+
+                            noteSound.pitch = NoteInfo.GetPitchFromPosition(position);
+                            noteSound.Play();
+
+                            if (HarmonyLevel > 0)
+                            {
+                                var hTrackInfo = Song.Harmony1Track.Notes[currentBeat];
+                                if (hTrackInfo != null && hTrackInfo is NoteInfo)
+                                {
+                                    var hNoteInfo = hTrackInfo as NoteInfo;
+                                    hNoteInfo.noteScript.Explode();
+                                    harmony1Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
+                                    harmony1Sound.Play();
+                                }
+                            }
+
+                            if (HarmonyLevel > 1)
+                            {
+                                var hTrackInfo = Song.Harmony2Track.Notes[currentBeat];
+                                if (hTrackInfo != null && hTrackInfo is NoteInfo)
+                                {
+                                    var hNoteInfo = hTrackInfo as NoteInfo;
+                                    hNoteInfo.noteScript.Explode();
+                                    harmony2Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
+                                    harmony2Sound.Play();
+                                }
+                            }
+
+                            if (nextBarrier != null)
+                            {
+                                nextBarrier.Strength -= 1;
+                            }
+                            Scoring[currentBeat] = true;
+
+                            if (noteScript != null)
+                            {
+                                noteScript.Explode();
+                            }
+                        }
+                        else
+                        {
+                            Scoring[currentBeat] = false;
+                            if (HarmonyLevel > 0)
+                            {
+                                playerRef.FlashScreenColour(Color.gray, 10);
+                            }
+                            CurrentStreak = 0;
+                            HarmonyLevel = 0;
+                            noteSound.Stop();
+                            harmony1Sound.Stop();
+                            harmony2Sound.Stop();
+                            if (noteScript != null)
+                            {
+                                noteScript.FadeNote();
+                            }
+                        }
+                    }
+                    else if (currentTrackInfo is BarrierInfo)
+                    {
+                        var currentBarrier = currentTrackInfo as BarrierInfo;
+                        if (!currentBarrier.Destroyed)
+                        {
+                            CurrentStreak = 0;
+                            if (playerRef.TakeDamage())
+                            {
+                                dead = true;
+                                RestartUI.enabled = true;
                             }
                         }
 
 
-                        playerRef.ReactToNote(currentNote.GetNoteColour());
+                        nextBarrier = Song.MelodyTrack.Notes.Skip(currentBeat + 1).Where(t => t is BarrierInfo).Select(t => t as BarrierInfo).FirstOrDefault();
+                    }
+                }
+            }
+            else
+            {
+                if (!victory && currentBeat > Song.MelodyTrack.Notes.Count + 10)
+                {
+                    playerRef.Win();
+                    playerRef.FlashScreenColour(Color.white, 30);
+                    foreach(var note in FindObjectsOfType<NoteScript>())
+                    {
+                        note.SpriteRenderer.enabled = false;
+                    }
 
-                        noteSound.pitch = NoteInfo.GetPitchFromPosition(position);
-                        noteSound.Play();
-
-                        if (HarmonyLevel > 0)
-                        {
-                            var hTrackInfo = Song.Harmony1Track.Notes[currentBeat];
-                            if (hTrackInfo != null && hTrackInfo is NoteInfo)
-                            {
-                                var hNoteInfo = hTrackInfo as NoteInfo;
-                                hNoteInfo.noteScript.Explode();
-                                harmony1Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
-                                harmony1Sound.Play();
-                            }
-                        }
-
-                        if (HarmonyLevel > 1)
-                        {
-                            var hTrackInfo = Song.Harmony2Track.Notes[currentBeat];
-                            if (hTrackInfo != null && hTrackInfo is NoteInfo)
-                            {
-                                var hNoteInfo = hTrackInfo as NoteInfo;
-                                hNoteInfo.noteScript.Explode();
-                                harmony2Sound.pitch = NoteInfo.GetPitchFromPosition(hNoteInfo.GetPosition());
-                                harmony2Sound.Play();
-                            }
-                        }
-
-                        if (nextBarrier != null)
-                        {
-                            nextBarrier.Strength -= 1;
-                        }
-                        Scoring[currentBeat] = true;
-
-                        if (noteScript != null)
-                        {
-                            noteScript.Explode();
-                        }
+                    StartCoroutine(FadeOutNotes(100));
+                    victory = true;
+                    if (Scoring.Any(s => s.HasValue && !s.Value))
+                    {
+                        VictoryUI.text = "GOOD WORK! BUT CAN YOU GET 100%?";
                     }
                     else
                     {
-                        Scoring[currentBeat] = false;
-                        if (HarmonyLevel > 0)
-                        {
-                            playerRef.FlashScreenColour(Color.gray, 10);
-                        }
-                        CurrentStreak = 0;
-                        HarmonyLevel = 0;
-                        noteSound.Stop();
-                        harmony1Sound.Stop();
-                        harmony2Sound.Stop();
-                        if (noteScript != null)
-                        {
-                            noteScript.FadeNote();
-                        }
-                    }
-                }
-                else if (currentTrackInfo is BarrierInfo)
-                {
-                    var currentBarrier = currentTrackInfo as BarrierInfo;
-                    if (!currentBarrier.Destroyed)
-                    {
-                        CurrentStreak = 0;
-                        if(playerRef.TakeDamage())
-                        {
-                            dead = true;
-                            RestartUI.enabled = true;
-                        }
+                        VictoryUI.text = "FLAWLESS VICTORY!";
                     }
 
+                    VictoryUI.enabled = true;
+                }               
 
-                    nextBarrier = Song.MelodyTrack.Notes.Skip(currentBeat + 1).Where(t => t is BarrierInfo).Select(t => t as BarrierInfo).FirstOrDefault();
-                }
-            }
+            }          
 
             ScoreUI.text = (CurrentScore * 17).ToString();
             StreakUI.text = HarmonyLevel > 0 ? "X" + (HarmonyLevel + 1).ToString() : "";
@@ -271,6 +304,29 @@ public class MusicMasterScript : MonoBehaviour {
 
             
             currentBeat++;
+        }
+    }
+
+    IEnumerator FadeOutNotes(int time)
+    {
+        var currentVolume = noteSound.volume;
+
+        for (int i = 0; i <= time; i++)
+        {
+            if (i == time)
+            {
+                noteSound.volume = 0f;
+                harmony1Sound.volume = 0f;
+                harmony2Sound.volume = 0f;
+            }
+            else
+            {
+                noteSound.volume = currentVolume - (((currentVolume / time) * (i + 1)));
+                harmony1Sound.volume = currentVolume - (((currentVolume / time) * (i + 1)));
+                harmony2Sound.volume = currentVolume - (((currentVolume / time) * (i + 1)));
+            }
+
+            yield return null;         
         }
     }
 

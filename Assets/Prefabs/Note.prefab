@@ -131,6 +131,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 647dd4a5881c4d6449aa4f7d46a539d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  masterScript: {fileID: 0}
+  HarmonyLevel: 0
 --- !u!198 &198960437696386106
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -596,7 +598,7 @@ ParticleSystem:
         m_RotationOrder: 4
       minMaxState: 0
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 500
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -665,7 +667,7 @@ ParticleSystem:
     enabled: 1
     serializedVersion: 3
     rateOverTime:
-      scalar: 200
+      scalar: 100
       maxCurve:
         serializedVersion: 2
         m_Curve:

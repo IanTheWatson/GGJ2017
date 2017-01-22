@@ -69,6 +69,7 @@ MonoBehaviour:
   StreakUI: {fileID: 0}
   ScoreUI: {fileID: 0}
   RestartUI: {fileID: 0}
+  VictoryUI: {fileID: 0}
   CurrentPlayerRow: 0
   SongFilePath: music.txt
   dead: 0

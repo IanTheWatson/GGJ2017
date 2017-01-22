@@ -26,7 +26,6 @@ public class BackgroundScript : MonoBehaviour {
     void FixedUpdate()
     {
         var newPosition = (transform.localPosition.x + (speed * (DirectionRight ? 1 : -1))) % 15f;
-        Debug.Log(newPosition);
         transform.localPosition = new Vector3(newPosition, transform.localPosition.y, 0);        
     }
 
